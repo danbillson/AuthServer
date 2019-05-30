@@ -1,5 +1,5 @@
+import { signUp } from './controllers/authentication';
+
 export default app => {
-	app.get('/', (req, res, next) => {
-		res.send(['Hello', 'world', '!']);
-	});
+	app.post('/signup', signUp);
 };
