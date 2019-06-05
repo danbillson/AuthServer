@@ -4,13 +4,16 @@ import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import { connect } from 'mongoose';
 import router from './router';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 
 // Database
 connect(
-	`mongodb://localhost:auth/auth`,
-	{ useNewUrlParser: true }
+    `mongodb://localhost:auth/auth`,
+    { useNewUrlParser: true }
 );
 
 // App
