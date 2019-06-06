@@ -1,9 +1,10 @@
 import jwt from 'jwt-simple';
 import User from '../models/user';
+import { secret } from '../config';
 
 const tokenForUser = user => {
     const iat = new Date().getTime();
-    return jwt.encode({ sub: user.id, iat }, process.env.SECRET);
+    return jwt.encode({ sub: user.id, iat }, secret);
 };
 
 export const signUp = (req, res, next) => {
@@ -39,4 +40,8 @@ export const signUp = (req, res, next) => {
             res.json({ token: tokenForUser(newUser) });
         });
     });
+};
+
+export const signIn = (req, res, next) => {
+    res.send({ token: tokenForUser(req.user) });
 };

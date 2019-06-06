@@ -1,5 +1,15 @@
-import { signUp } from './controllers/authentication';
+import passport from 'passport';
+import { signUp, signIn } from './controllers/authentication';
+import passportService from './services/passport';
+
+const requireAuth = passport.authenticate('jwt', { session: false });
+const requireSignIn = passport.authenticate('local', { session: false });
 
 export default app => {
-	app.post('/signup', signUp);
+    app.get('/', requireAuth, (req, res) => {
+        res.send({ hi: 'there' });
+    });
+
+    app.post('/signup', signUp);
+    app.post('/signin', requireSignIn, signIn);
 };

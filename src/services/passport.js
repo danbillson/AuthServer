@@ -1,10 +1,36 @@
 import passport from 'passport';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
+import LocalStrategy from 'passport-local';
 import User from '../models/user';
+import { secret } from '../config';
+
+const localOptions = { usernameField: 'email' };
+
+const localLogin = new LocalStrategy(localOptions, (email, password, done) => {
+    User.findOne({ email }, (err, user) => {
+        if (err) {
+            return done(err);
+        }
+        if (!user) {
+            return done(null, false);
+        }
+
+        user.comparePassword(password, (err, isMatch) => {
+            if (err) {
+                return done(err);
+            }
+            if (!isMatch) {
+                return done(null, false);
+            }
+
+            return done(null, user);
+        });
+    });
+});
 
 const jwtOptions = {
     jwtFromRequest: ExtractJwt.fromHeader('authorization'),
-    secretOrKey: process.env.SECRET
+    secretOrKey: secret
 };
 
 const jwtLogin = new JwtStrategy(jwtOptions, (payload, done) => {
@@ -22,3 +48,4 @@ const jwtLogin = new JwtStrategy(jwtOptions, (payload, done) => {
 });
 
 passport.use(jwtLogin);
+passport.use(localLogin);
